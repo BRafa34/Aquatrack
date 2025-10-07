@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - AquaTrack{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Bienvenido a AquaTrack</h1>
+    <p>Sistema de monitoreo de agua</p>
+    <a href="{{ url_for('main.dashboard') }}" class="btn">Ver Dashboard</a>
+</div>
+{% endblock %}
