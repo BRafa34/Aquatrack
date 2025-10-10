@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - AquaTrack{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <h1>Dashboard</h1>
+        <p class="welcome-message">Bienvenido, <strong>{{ user.username }}</strong></p>
+        <div class="user-info">
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Rol:</strong> 
+                <span class="role-badge {{ user.role }}">
+                    {{ "Administrador" if user.role == 'admin' else "Conductor" }}
+                </span>
+            </p>
+            <p><strong>Miembro desde:</strong> {{ user.created_at.strftime('%d/%m/%Y') }}</p>
+        </div>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>📊 Resumen del Sistema</h3>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Clientes Activos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Pedidos Hoy</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Vehículos</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">0</span>
+                    <span class="stat-label">Zonas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <h3>Acciones Rápidas</h3>
+        <div class="action-grid">
+            {% if user.role == 'admin' %}
+            <a href="#" class="action-card admin-only">
+                <div class="action-icon">👥</div>
+                <div class="action-text">Gestionar Usuarios</div>
+            </a>
+            <a href="#" class="action-card admin-only">
+                <div class="action-icon">🚚</div>
+                <div class="action-text">Gestionar Vehículos</div>
+            </a>
+            <a href="#" class="action-card admin-only">
+                <div class="action-icon">🗺️</div>
+                <div class="action-text">Configurar Zonas</div>
+            </a>
+            {% endif %}
+            
+            <a href="#" class="action-card">
+                <div class="action-icon">📦</div>
+                <div class="action-text">Ver Pedidos</div>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">👤</div>
+                <div class="action-text">Clientes</div>
+            </a>
+            <a href="#" class="action-card">
+                <div class="action-icon">🛣️</div>
+                <div class="action-text">Rutas de Entrega</div>
+            </a>
+        </div>
+    </div>
+
+    <div class="recent-activity">
+        <h3>Actividad Reciente</h3>
+        <div class="activity-list">
+            <div class="activity-item">
+                <div class="activity-icon">✅</div>
+                <div class="activity-content">
+                    <p>Tu cuenta ha sido creada exitosamente</p>
+                    <span class="activity-time">Hoy</span>
+                </div>
+            </div>
+            <!-- Más actividades aparecerán aquí -->
+        </div>
+    </div>
+</div>
+{% endblock %}
