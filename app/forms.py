@@ -10,15 +10,15 @@ class LoginForm(FlaskForm):
     # esta clase crea los campos para el login usando los imports anteriores
 
 class RegistrationForm(FlaskForm):
-    username = StringField('Nombre de Usuario', 
+    username = StringField('Nombre de Usuario',
                           validators=[DataRequired(), Length(min=4, max=20)])
-    email = StringField('Correo Electrónico', 
-                       validators=[DataRequired(), Email()])
-    password = PasswordField('Contraseña', 
+    email = StringField('Correo Electrónico',
+                       validators=[DataRequired()])
+    password = PasswordField('Contraseña',
                             validators=[DataRequired(), Length(min=6)])
-    confirm_password = PasswordField('Confirmar Contraseña', 
+    confirm_password = PasswordField('Confirmar Contraseña',
                                    validators=[DataRequired(), EqualTo('password')])
-    role = SelectField('Rol', 
+    role = SelectField('Rol',
                   choices=[('admin', 'Administrador'), ('driver', 'Conductor')],
                   validators=[DataRequired()])
     submit = SubmitField('Registrarse')

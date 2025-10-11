@@ -1,4 +1,4 @@
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://usuario:contraseña@localhost:5432/aquatrack'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://usuario:sILVANITA16@localhost:5432/aquatrack'
 
 import os
 from dotenv import load_dotenv
