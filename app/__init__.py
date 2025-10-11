@@ -14,7 +14,7 @@ def create_app():
     
     # Configuración de la aplicación
     app.config['SECRET_KEY'] = 'aquatrack-super-secret-key-2024'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:sILVANITA16@localhost:5432/aquatrack' #AQUI PONGAN SUS DATOS DE US BASE DE DATOS
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:SILVANITA16@localhost:5432/AquaTrack_BD'#AQUI PONGAN SUS DATOS DE US BASE DE DATOS
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Inicializar extensiones con la app
