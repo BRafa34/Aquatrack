@@ -8,20 +8,21 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #E8EDF2;
+    background: linear-gradient(135deg, #2C3E50 0%, #3F5566 100%);
     min-height: 100vh;
 }
 
 /* ===== BARRA DE NAVEGACIÓN ===== */
 .navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(60, 75, 90, 0.9);
+    backdrop-filter: blur(12px);
     padding: 1rem 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     position: sticky;
     top: 0;
     z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .nav-container {
@@ -34,10 +35,11 @@ body {
 }
 
 .nav-logo a {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     font-weight: bold;
-    color: #667eea;
+    color: #E8EDF2;
     text-decoration: none;
+    letter-spacing: 1px;
 }
 
 .nav-menu {
@@ -47,26 +49,28 @@ body {
 }
 
 .nav-link {
-    color: #333;
+    color: #B8C4CC;
     text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+    padding: 0.5rem 0.5rem;
+    border-radius: 6px;
     transition: all 0.3s ease;
 }
 
 .nav-link:hover {
-    background: #667eea;
-    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    color: #2ECC71;
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.2);
 }
 
 .nav-user {
-    color: #666;
+    color: #B8C4CC;
     font-size: 0.9rem;
 }
 
 .logout-btn {
     background: #e74c3c;
-    color: white !important;
+    color: #fff !important;
+    border-radius: 6px;
 }
 
 .logout-btn:hover {
@@ -438,5 +442,142 @@ body {
     
     .action-grid {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ===== HERO AQUATRACK ===== */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: calc(100vh - 100px);
+    padding: 4rem 8%;
+    background: linear-gradient(135deg, #2C3E50 0%, #3F5566 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    flex: 1;
+    color: #E8EDF2;
+    max-width: 50%;
+    z-index: 2;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+}
+
+.hero-content .highlight {
+    color: #2ECC71;
+}
+
+.hero-content .subtitle {
+    font-size: 1.2rem;
+    color: #B8C4CC;
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    display: inline-block;
+    padding: 0.9rem 2rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    text-decoration: none;
+    color: #fff;
+    background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(46, 204, 113, 0.4);
+}
+
+/* ===== HERO GRAPHIC (parte derecha) ===== */
+.hero-graphic {
+    flex: 1;
+    position: relative;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Capa de mapa abstracto */
+.map-layer {
+    width: 90%;
+    height: 90%;
+    background: url("{{ url_for('static', filename='img/tracking-map.jpg') }}") center/cover no-repeat;
+    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
+    filter: brightness(0.9) contrast(1.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Hexágono decorativo */
+.hexagon {
+    position: absolute;
+    width: 200px;
+    height: 115px;
+    background: rgba(46, 204, 113, 0.1);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    border: 2px solid rgba(46, 204, 113, 0.4);
+    animation: rotate 10s linear infinite;
+}
+
+/* Pulso luminoso */
+.pulse {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background: rgba(46, 204, 113, 0.15);
+    border-radius: 50%;
+    animation: pulse 2.5s infinite;
+}
+
+/* ===== ANIMACIONES ===== */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 0.1; }
+    100% { transform: scale(0.9); opacity: 0.5; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 900px) {
+    .hero {
+        flex-direction: column-reverse;
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+
+    .hero-content {
+        max-width: 100%;
+    }
+
+    .hero-graphic {
+        height: 250px;
+        margin-bottom: 2rem;
+    }
+
+    .map-layer {
+        clip-path: none;
+        border-radius: 15px;
     }
 }

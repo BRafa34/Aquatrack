@@ -3,9 +3,17 @@
 {% block title %}Inicio - AquaTrack{% endblock %}
 
 {% block content %}
-<div class="hero">
-    <h1>Bienvenido a AquaTrack</h1>
-    <p>Sistema de monitoreo de agua</p>
-    <a href="{{ url_for('main.dashboard') }}" class="btn">Ver Dashboard</a>
-</div>
+<section class="hero">
+    <div class="hero-content">
+        <h1>Bienvenido a <span class="highlight">AquaTrack</span></h1>
+        <p class="subtitle">Administra, rastrea y optimiza la distribución del agua en tiempo real.</p>
+        <a href="{{ url_for('main.dashboard') }}" class="btn-primary">Ver Dashboard</a>
+    </div>
+
+    <div class="hero-graphic">
+        <div class="map-layer"></div>
+        <div class="pulse"></div>
+        <div class="hexagon"></div>
+    </div>
+</section>
 {% endblock %}
