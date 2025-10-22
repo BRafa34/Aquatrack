@@ -509,17 +509,6 @@ body {
     justify-content: center;
 }
 
-/* Capa de mapa abstracto 
-.map-layer {
-    width: 90%;
-    height: 90%;
-    background: url("{{ url_for('static', filename='img/tracking-map.jpg') }}") center/cover no-repeat;
-    clip-path: polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%);
-    filter: brightness(0.9) contrast(1.1);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-    animation: float 6s ease-in-out infinite; 
-}*/
 
 /* Hexágono decorativo */
 .hexagon {

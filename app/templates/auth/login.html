@@ -8,7 +8,7 @@
         <h2>Iniciar Sesión</h2>
         <p class="auth-subtitle">Accede a tu cuenta de AquaTrack</p>
         
-        <form method="POST" action="{{ url_for('main.login') }}" class="auth-form">
+        <form method="POST" action="{{ url_for('auth.login') }}" class="auth-form">
             {{ form.hidden_tag() }}
             
             <div class="form-group">
@@ -41,7 +41,7 @@
         </form>
         
         <div class="auth-links">
-            <p>¿No tienes cuenta? <a href="{{ url_for('main.register') }}">Regístrate aquí</a></p>
+            <p>¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate aquí</a></p>
             <p><a href="{{ url_for('main.index') }}">← Volver al inicio</a></p>
         </div>
     </div>
