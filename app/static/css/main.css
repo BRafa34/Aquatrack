@@ -548,6 +548,299 @@ body {
     100% { transform: scale(0.9); opacity: 0.5; }
 }
 
+/* ===== PÁGINAS CRUD ===== */
+.page-header {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.page-header h1 {
+    color: #E8EDF2;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.page-header .btn {
+    margin-right: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    margin-top: 1rem;
+}
+
+/* ===== TABLAS ===== */
+.table-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    background: transparent;
+    color: #E8EDF2;
+}
+
+.table thead {
+    background: rgba(46, 204, 113, 0.1);
+    border-radius: 10px 10px 0 0;
+}
+
+.table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2ECC71;
+    border-bottom: 2px solid rgba(46, 204, 113, 0.2);
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+.table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background: rgba(46, 204, 113, 0.05);
+    transform: scale(1.01);
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== FORMULARIOS CRUD ===== */
+.form-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-container h1 {
+    color: #E8EDF2;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #B8C4CC;
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #E8EDF2;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.input:focus {
+    outline: none;
+    border-color: #2ECC71;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.2);
+    transform: translateY(-1px);
+}
+
+.input::placeholder {
+    color: rgba(184, 196, 204, 0.6);
+}
+
+/* ===== BOTONES CRUD ===== */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary, .btn {
+    background: linear-gradient(135deg, #2ECC71 0%, #27AE60 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+}
+
+.btn-primary:hover, .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+}
+
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #95A5A6 0%, #7F8C8D 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+}
+
+/* ===== ESTADOS Y BADGES ===== */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #FFC107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
+}
+
+.status-assigned {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498DB;
+    border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.status-delivered {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ECC71;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.status-cancelled {
+    background: rgba(231, 76, 60, 0.2);
+    color: #E74C3C;
+    border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.role-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background: rgba(155, 89, 182, 0.2);
+    color: #9B59B6;
+    border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
+.role-driver {
+    background: rgba(52, 152, 219, 0.2);
+    color: #3498DB;
+    border: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+/* ===== MAPA ===== */
+.map-container {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.map-container h1 {
+    color: #E8EDF2;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.map-container p {
+    color: #B8C4CC;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.map-container img {
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.map-container img:hover {
+    transform: scale(1.02);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 900px) {
     .hero {

@@ -46,7 +46,7 @@
         <h3>Acciones Rápidas</h3>
         <div class="action-grid">
             {% if user.role == 'admin' %}
-            <a href="#" class="action-card admin-only">
+            <a href="{{ url_for('users.list_users') }}" class="action-card admin-only">
                 <div class="action-icon">👥</div>
                 <div class="action-text">Gestionar Usuarios</div>
             </a>
@@ -60,17 +60,17 @@
             </a>
             {% endif %}
             
-            <a href="#" class="action-card">
+            <a href="{{ url_for('orders.list_orders') }}" class="action-card">
                 <div class="action-icon">📦</div>
                 <div class="action-text">Ver Pedidos</div>
             </a>
-            <a href="#" class="action-card">
+            <a href="{{ url_for('clients.list_clients') }}" class="action-card">
                 <div class="action-icon">👤</div>
                 <div class="action-text">Clientes</div>
             </a>
-            <a href="#" class="action-card">
-                <div class="action-icon">🛣️</div>
-                <div class="action-text">Rutas de Entrega</div>
+            <a href="{{ url_for('tracking.map_view') }}" class="action-card">
+                <div class="action-icon">🗺️</div>
+                <div class="action-text">Ver Mapa</div>
             </a>
         </div>
     </div>

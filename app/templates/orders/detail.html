@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if is_edit else 'Crear' }} pedido - AquaTrack{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1>{{ '✏️ Editar' if is_edit else '➕ Crear' }} pedido</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.client_id.label }}
+      {{ form.client_id(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.delivery_date.label }}
+      {{ form.delivery_date(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.items.label }}
+      {{ form.items(rows=6, class_='input', placeholder='[{"sku":"agua_500","qty":10}]') }}
+      <small style="color: #B8C4CC;">Formato JSON. Ejemplo: [{"sku":"agua_500","qty":10}]</small>
+    </div>
+
+    <div class="form-group">
+      {{ form.total_amount.label }}
+      {{ form.total_amount(class_='input', placeholder='0.00') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.status.label }}
+      {{ form.status(class_='input') }}
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      {{ form.submit(class_='btn') }}
+      <a class="btn btn-secondary" href="{{ url_for('orders.list_orders') }}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

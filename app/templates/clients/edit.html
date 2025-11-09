@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if is_edit else 'Crear' }} cliente - AquaTrack{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1>{{ '✏️ Editar' if is_edit else '➕ Crear' }} cliente</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.name.label }}
+      {{ form.name(class_='input', placeholder='Nombre del cliente') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.address.label }}
+      {{ form.address(rows=3, class_='input', placeholder='Dirección completa') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.lat.label }}
+      {{ form.lat(class_='input', placeholder='-12.0464') }}
+      <small style="color: #B8C4CC;">Latitud (-90 a 90)</small>
+    </div>
+
+    <div class="form-group">
+      {{ form.lon.label }}
+      {{ form.lon(class_='input', placeholder='-77.0428') }}
+      <small style="color: #B8C4CC;">Longitud (-180 a 180)</small>
+    </div>
+
+    <div class="form-group">
+      {{ form.phone.label }}
+      {{ form.phone(class_='input', placeholder='+51 999 999 999') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.notes.label }}
+      {{ form.notes(rows=3, class_='input', placeholder='Notas adicionales') }}
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      {{ form.submit(class_='btn') }}
+      <a class="btn btn-secondary" href="{{ url_for('clients.list_clients') }}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

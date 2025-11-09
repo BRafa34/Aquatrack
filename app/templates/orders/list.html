@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Pedidos - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>📦 Pedidos</h1>
+  <a class="btn" href="{{ url_for('orders.create_order') }}">➕ Nuevo pedido</a>
+  <a class="btn btn-secondary" href="{{ url_for('main.dashboard') }}">🏠 Volver</a>
+  <hr>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Cliente</th>
+        <th>Fecha</th>
+        <th>Entrega</th>
+        <th>Estado</th>
+        <th>Monto</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for o in orders %}
+      <tr>
+        <td>{{ o.id }}</td>
+        <td>{{ o.client.name if o.client else '-' }}</td>
+        <td>{{ o.created_at.date() if o.created_at else '-' }}</td>
+        <td>{{ o.delivery_date or '-' }}</td>
+        <td><span class="status-badge status-{{ o.status }}">{{ o.status }}</span></td>
+        <td>{{ o.total_amount or '-' }}</td>
+        <td>
+          <a class="btn" href="{{ url_for('orders.edit_order', order_id=o.id) }}">✏️ Editar</a>
+          <form method="post" action="{{ url_for('orders.delete_order', order_id=o.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar pedido?');">
+            <button class="btn btn-danger" type="submit">🗑️ Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+   </table>
+</div>
+{% endblock %}

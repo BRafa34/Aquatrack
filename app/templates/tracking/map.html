@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Mapa - AquaTrack{% endblock %}
+{% block content %}
+<div class="map-container">
+  <h1>🗺️ Mapa de Distribución</h1>
+  <p>Vista de mapa de Cochabamba. Aquí podrás ver la ubicación de clientes y rutas de entrega en la ciudad.</p>
+  <div style="margin: 2rem 0;">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Cochabamba_Department_map.svg/800px-Cochabamba_Department_map.svg.png" alt="Mapa de Cochabamba" style="max-width: 100%; height: auto; border-radius: 15px; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);"/>
+  </div>
+  <div style="margin-top: 2rem;">
+    <a class="btn" href="{{ url_for('main.dashboard') }}">🏠 Volver al Dashboard</a>
+    <a class="btn btn-secondary" href="{{ url_for('clients.list_clients') }}">👤 Ver Clientes</a>
+  </div>
+</div>
+{% endblock %}

@@ -26,8 +26,16 @@ def create_app():
     # Registrar Blueprints
     from app.auth.routes import auth_bp
     from app.main.routes import main_bp
+    from app.users.routes import users_bp
+    from app.orders.routes import orders_bp
+    from app.tracking.routes import tracking_bp
+    from app.clients.routes import clients_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
+    app.register_blueprint(users_bp)
+    app.register_blueprint(orders_bp)
+    app.register_blueprint(tracking_bp)
+    app.register_blueprint(clients_bp)
     
     return app

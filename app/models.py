@@ -62,3 +62,25 @@ class Client(db.Model):
     active = db.Column(db.Boolean, default=True)
     notes = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class Depot(db.Model):
+    __tablename__ = 'depots'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    address = db.Column(db.Text)
+    lat = db.Column(db.Float)
+    lon = db.Column(db.Float)
+    notes = db.Column(db.Text)
+
+class Order(db.Model):
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True)
+    client_id = db.Column(db.Integer, db.ForeignKey('clients.id'))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    order_time = db.Column(db.DateTime, default=datetime.utcnow)
+    delivery_date = db.Column(db.Date)
+    items = db.Column(db.JSON)
+    total_amount = db.Column(db.Numeric)
+    status = db.Column(db.String(20), default='pending')  # pending|assigned|delivered|cancelled
+
+    client = db.relationship('Client', backref='orders')

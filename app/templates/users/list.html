@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Usuarios - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>👥 Usuarios</h1>
+  <a class="btn" href="{{ url_for('users.create_user') }}">➕ Nuevo usuario</a>
+  <a class="btn btn-secondary" href="{{ url_for('main.dashboard') }}">🏠 Volver</a>
+  <hr>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Usuario</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.username }}</td>
+        <td>{{ u.email or '-' }}</td>
+        <td><span class="role-badge role-{{ u.role }}">{{ u.role }}</span></td>
+        <td>
+          <a class="btn" href="{{ url_for('users.edit_user', user_id=u.id) }}">✏️ Editar</a>
+          <form method="post" action="{{ url_for('users.delete_user', user_id=u.id) }}" style="display:inline" onsubmit="return confirm('¿Eliminar usuario?');">
+            <button class="btn btn-danger" type="submit">🗑️ Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+   </table>
+</div>
+{% endblock %}
