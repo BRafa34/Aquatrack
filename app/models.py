@@ -72,31 +72,15 @@ class Depot(db.Model):
     lon = db.Column(db.Float)
     notes = db.Column(db.Text)
 
-
-class Product(db.Model):
-    __tablename__ = 'products'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150), nullable=False)
-    sku = db.Column(db.String(80), unique=True)
-    price = db.Column(db.Numeric, nullable=True)
-    active = db.Column(db.Boolean, default=True)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
 class Order(db.Model):
     __tablename__ = 'orders'
     id = db.Column(db.Integer, primary_key=True)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'))
-    zone_id = db.Column(db.Integer, db.ForeignKey('zones.id'), nullable=True)
-    driver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     order_time = db.Column(db.DateTime, default=datetime.utcnow)
     delivery_date = db.Column(db.Date)
-    delivered_at = db.Column(db.DateTime, nullable=True)
     items = db.Column(db.JSON)
     total_amount = db.Column(db.Numeric)
     status = db.Column(db.String(20), default='pending')  # pending|assigned|delivered|cancelled
-    driver_notes = db.Column(db.Text, nullable=True)  # Notas del conductor sobre errores o problemas
 
     client = db.relationship('Client', backref='orders')
-    driver = db.relationship('User', backref='assigned_orders', foreign_keys=[driver_id])
-    zone = db.relationship('Zone', backref='orders')

@@ -12,35 +12,14 @@
     </div>
 
     <div class="form-group">
-      {{ form.zone_id.label }}
-      {{ form.zone_id(class_='input') }}
-    </div>
-
-    <div class="form-group">
       {{ form.delivery_date.label }}
       {{ form.delivery_date(class_='input') }}
     </div>
 
     <div class="form-group">
-      <label>Productos</label>
-      <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
-        <select id="productSelect" class="input">
-          <option value="">-- Selecciona producto --</option>
-          {% for p in products %}
-          <option value="{{ p.id }}" data-sku="{{ p.sku }}" data-price="{{ p.price }}">{{ p.name }}{% if p.sku %} ({{ p.sku }}){% endif %}{% if p.price %} - Bs. {{ p.price }}{% endif %}</option>
-          {% endfor %}
-        </select>
-        <input id="productQty" type="number" min="1" value="1" class="input" style="width:80px;" />
-        <button type="button" id="addProductBtn" class="btn">Añadir</button>
-      </div>
-
-      <table id="cartTable" class="table" style="margin-bottom:0.5rem;">
-        <thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th><th>Precio</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
-
-      {{ form.items(rows=4, class_='input', style='display:none;') }}
-      <small style="color: #B8C4CC;">Usa el selector para construir la lista de productos del pedido.</small>
+      {{ form.items.label }}
+      {{ form.items(rows=6, class_='input', placeholder='[{"sku":"agua_500","qty":10}]') }}
+      <small style="color: #B8C4CC;">Formato JSON. Ejemplo: [{"sku":"agua_500","qty":10}]</small>
     </div>
 
     <div class="form-group">
@@ -59,77 +38,4 @@
     </div>
   </form>
 </div>
-{% endblock %}
-
-{% block extra_js %}
-{{ super() }}
-<script>
-  (function(){
-    const products = {{ products|tojson if products is defined else '[]' }};
-    const itemsField = document.querySelector('textarea[name="items"]');
-    const cartTableBody = document.querySelector('#cartTable tbody');
-    const productSelect = document.getElementById('productSelect');
-    const productQty = document.getElementById('productQty');
-    const addBtn = document.getElementById('addProductBtn');
-    let items = [];
-
-    // Cargar items existentes (si los hay)
-    try {
-      if (itemsField && itemsField.value) {
-        items = JSON.parse(itemsField.value);
-      }
-    } catch (e) {
-      items = [];
-    }
-
-    function renderItems(){
-      cartTableBody.innerHTML = '';
-      items.forEach((it, idx) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${it.name || ''}</td><td>${it.sku||''}</td><td>${it.qty}</td><td>${it.price||''}</td><td><button type="button" data-idx="${idx}" class="btn btn-small remove-item">Quitar</button></td>`;
-        cartTableBody.appendChild(tr);
-      });
-      // actualizar campo oculto
-      if (itemsField) itemsField.value = JSON.stringify(items);
-    }
-
-    // Añadir producto
-    addBtn && addBtn.addEventListener('click', function(){
-      const pid = productSelect.value;
-      const qty = parseInt(productQty.value) || 1;
-      if (!pid) return alert('Selecciona un producto');
-      const prod = products.find(p => String(p.id) === String(pid));
-      if (!prod) return alert('Producto no encontrado');
-
-      // Si ya existe, sumar cantidades
-      const existing = items.find(i => String(i.product_id) === String(pid));
-      if (existing) {
-        existing.qty = (existing.qty || 0) + qty;
-      } else {
-        items.push({ product_id: prod.id, sku: prod.sku, name: prod.name, qty: qty, price: prod.price });
-      }
-      renderItems();
-    });
-
-    // Remover item (delegation)
-    cartTableBody.addEventListener('click', function(e){
-      if (e.target && e.target.matches('.remove-item')){
-        const idx = parseInt(e.target.getAttribute('data-idx'),10);
-        if (!isNaN(idx)) {
-          items.splice(idx,1);
-          renderItems();
-        }
-      }
-    });
-
-    // Antes de enviar el form, asegurar que textarea items contiene JSON
-    const form = document.querySelector('form');
-    form && form.addEventListener('submit', function(){
-      if (itemsField) itemsField.value = JSON.stringify(items);
-    });
-
-    // Inicial render
-    renderItems();
-  })();
-</script>
 {% endblock %}

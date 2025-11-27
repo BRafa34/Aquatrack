@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_required
 from app import db
-from app.models import Order, Client, Zone, Product
+from app.models import Order, Client
 from .forms import OrderForm
 import json
 
@@ -20,7 +20,6 @@ def list_orders():
 def create_order():
     form = OrderForm()
     form.client_id.choices = [(c.id, c.name) for c in Client.query.order_by(Client.name).all()]
-    form.zone_id.choices = [(z.id, z.name) for z in Zone.query.order_by(Zone.name).all()]
     if form.validate_on_submit():
         items_json = None
         if form.items.data:
@@ -31,7 +30,6 @@ def create_order():
                 return render_template('orders/detail.html', form=form, is_edit=False)
         order = Order(
             client_id=form.client_id.data,
-            zone_id=form.zone_id.data,
             delivery_date=form.delivery_date.data,
             items=items_json,
             total_amount=form.total_amount.data,
@@ -41,8 +39,7 @@ def create_order():
         db.session.commit()
         flash('Pedido creado', 'success')
         return redirect(url_for('orders.list_orders'))
-    products = Product.query.filter_by(active=True).order_by(Product.name).all()
-    return render_template('orders/detail.html', form=form, is_edit=False, products=products)
+    return render_template('orders/detail.html', form=form, is_edit=False)
 
 
 @orders_bp.route('/<int:order_id>/edit', methods=['GET', 'POST'])
@@ -51,10 +48,8 @@ def edit_order(order_id):
     order = Order.query.get_or_404(order_id)
     form = OrderForm(obj=order)
     form.client_id.choices = [(c.id, c.name) for c in Client.query.order_by(Client.name).all()]
-    form.zone_id.choices = [(z.id, z.name) for z in Zone.query.order_by(Zone.name).all()]
     if form.validate_on_submit():
         order.client_id = form.client_id.data
-        order.zone_id = form.zone_id.data
         order.delivery_date = form.delivery_date.data
         order.total_amount = form.total_amount.data
         order.status = form.status.data
@@ -69,8 +64,7 @@ def edit_order(order_id):
         flash('Pedido actualizado', 'success')
         return redirect(url_for('orders.list_orders'))
     form.items.data = json.dumps(order.items, ensure_ascii=False) if order.items else ''
-    products = Product.query.filter_by(active=True).order_by(Product.name).all()
-    return render_template('orders/detail.html', form=form, is_edit=True, products=products)
+    return render_template('orders/detail.html', form=form, is_edit=True)
 
 
 @orders_bp.route('/<int:order_id>/delete', methods=['POST'])

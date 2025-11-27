@@ -1,2 +1,0 @@
-# Blueprint para zonas
-

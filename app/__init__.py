@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
-from sqlalchemy import inspect, text
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -32,11 +30,6 @@ def create_app():
     from app.orders.routes import orders_bp
     from app.tracking.routes import tracking_bp
     from app.clients.routes import clients_bp
-    from app.drivers.routes import drivers_bp
-    from app.vehicles.routes import vehicles_bp
-    from app.zones.routes import zones_bp
-    from app.depots.routes import depots_bp
-    from app.products.routes import products_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -44,36 +37,5 @@ def create_app():
     app.register_blueprint(orders_bp)
     app.register_blueprint(tracking_bp)
     app.register_blueprint(clients_bp)
-    app.register_blueprint(drivers_bp)
-    app.register_blueprint(vehicles_bp)
-    app.register_blueprint(zones_bp)
-    app.register_blueprint(depots_bp)
-    app.register_blueprint(products_bp)
-
-    # --- Reparar esquema en caliente: añadir columna orders.zone_id si no existe ---
-    with app.app_context():
-        try:
-            inspector = inspect(db.engine)
-            if 'orders' in inspector.get_table_names():
-                cols = [c['name'] for c in inspector.get_columns('orders')]
-                if 'zone_id' not in cols:
-                    # Añadir columna nullable para no bloquear la app
-                    with db.engine.begin() as conn:
-                        conn.execute(text('ALTER TABLE orders ADD COLUMN zone_id INTEGER'))
-                        # Si existe la tabla zones, intentar añadir constraint FK (silencioso si falla)
-                        if 'zones' in inspector.get_table_names():
-                            try:
-                                conn.execute(text('ALTER TABLE orders ADD CONSTRAINT orders_zone_id_fkey FOREIGN KEY (zone_id) REFERENCES zones (id)'))
-                            except Exception:
-                                pass
-        except Exception as e:
-            # No romper el arranque si algo falla; imprimir para debugging
-            print('Warning: comprobación/esquema zone_id no completada:', e)
-        # Crear tablas faltantes (products, zones, etc.) si no existen
-        try:
-            # Esto crea solo las tablas que faltan y no modifica tablas existentes
-            db.create_all()
-        except Exception as e:
-            print('Warning: db.create_all() falló:', e)
     
     return app
