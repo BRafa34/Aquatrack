@@ -1,0 +1,2 @@
+# Blueprint para almacenes/depots
+

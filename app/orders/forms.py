@@ -5,6 +5,7 @@ from wtforms.validators import DataRequired, Optional
 
 class OrderForm(FlaskForm):
     client_id = SelectField('Cliente', coerce=int, validators=[DataRequired()])
+    zone_id = SelectField('Zona', coerce=int, validators=[DataRequired()])
     delivery_date = DateField('Fecha de entrega', validators=[Optional()])
     items = TextAreaField('Items (JSON)', validators=[Optional()])
     total_amount = DecimalField('Monto total', validators=[Optional()])

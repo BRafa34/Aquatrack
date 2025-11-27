@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Reportar Error - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>⚠️ Reportar Error en Pedido</h1>
+  <a class="btn btn-secondary" href="{{ url_for('drivers.driver_dashboard') }}">🏠 Volver</a>
+  <hr>
+</div>
+
+<div style="max-width: 600px; margin: 2rem auto;">
+  <div style="background: #fff; padding: 2rem; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+    <h3>Pedido #{{ order.id }}</h3>
+    <div style="margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+      <p><strong>Cliente:</strong> {{ order.client.name if order.client else 'N/A' }}</p>
+      <p><strong>Dirección:</strong> {{ order.client.address if order.client else 'N/A' }}</p>
+      <p><strong>Estado actual:</strong> 
+        <span class="status-badge status-{{ order.status }}">{{ order.status }}</span>
+      </p>
+    </div>
+
+    <form method="POST" style="margin-top: 2rem;">
+      <div style="margin-bottom: 1.5rem;">
+        <label for="error_notes" style="display: block; margin-bottom: 0.5rem; font-weight: bold;">
+          Describe el error o problema ocurrido:
+        </label>
+        <textarea 
+          id="error_notes" 
+          name="error_notes" 
+          rows="6" 
+          style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 5px; font-family: inherit; font-size: 1em;"
+          placeholder="Ejemplo: Cliente no se encontraba en la dirección, dirección incorrecta, producto dañado, etc."
+          required
+        ></textarea>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <button type="submit" class="btn btn-warning" style="flex: 1;">
+          ⚠️ Reportar Error
+        </button>
+        <a href="{{ url_for('drivers.driver_dashboard') }}" class="btn btn-secondary" style="flex: 1; text-align: center;">
+          Cancelar
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

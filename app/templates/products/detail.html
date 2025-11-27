@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if is_edit else 'Crear' }} producto - AquaTrack{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1>{{ '✏️ Editar' if is_edit else '➕ Crear' }} producto</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.name.label }}
+      {{ form.name(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.sku.label }}
+      {{ form.sku(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.price.label }}
+      {{ form.price(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.active() }} {{ form.active.label }}
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      {{ form.submit(class_='btn') }}
+      <a class="btn btn-secondary" href="{{ url_for('products.list_products') }}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

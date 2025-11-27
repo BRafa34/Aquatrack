@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Productos - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Productos</h1>
+  <a class="btn" href="{{ url_for('products.create_product') }}">➕ Nuevo Producto</a>
+</div>
+<div class="list">
+  <table class="table">
+    <thead>
+      <tr><th>Nombre</th><th>SKU</th><th>Precio</th><th>Activo</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ p.sku or '' }}</td>
+        <td>{{ p.price or '' }}</td>
+        <td>{{ 'Sí' if p.active else 'No' }}</td>
+        <td>
+          <a class="btn btn-small" href="{{ url_for('products.edit_product', product_id=p.id) }}">Editar</a>
+          <form method="post" action="{{ url_for('products.delete_product', product_id=p.id) }}" style="display:inline-block;" onsubmit="return confirm('Eliminar producto?');">
+            <button class="btn btn-danger btn-small">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -20,6 +20,9 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('¡Inicio de sesión exitoso!', 'success')
+            # Redirigir según el rol
+            if user.role == 'driver':
+                return redirect(url_for('drivers.driver_dashboard'))
             return redirect(url_for('main.dashboard'))
         else:
             flash('Email o contraseña incorrectos', 'error')
