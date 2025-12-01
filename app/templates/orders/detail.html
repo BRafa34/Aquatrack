@@ -27,7 +27,7 @@
         <select id="productSelect" class="input">
           <option value="">-- Selecciona producto --</option>
           {% for p in products %}
-          <option value="{{ p.id }}" data-sku="{{ p.sku }}" data-price="{{ p.price }}">{{ p.name }}{% if p.sku %} ({{ p.sku }}){% endif %}{% if p.price %} - Bs. {{ p.price }}{% endif %}</option>
+          <option value="{{ p.id }}" data-sku="{{ p.sku }}" data-price="{{ p.price }}" {% if p.stock|int <= 0 %}disabled{% endif %}>{{ p.name }}{% if p.sku %} ({{ p.sku }}){% endif %}{% if p.price %} - Bs. {{ p.price }}{% endif %}{% if p.stock is not none %} — Stock: {{ p.stock }}{% endif %}</option>
           {% endfor %}
         </select>
         <input id="productQty" type="number" min="1" value="1" class="input" style="width:80px;" />

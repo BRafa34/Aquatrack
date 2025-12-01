@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Inventario - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>Inventario</h1>
+  <p>Resumen rápido del stock y productos más vendidos</p>
+  <a class="btn" href="{{ url_for('products.create_product') }}">➕ Nuevo Producto</a>
+  <a class="btn" href="{{ url_for('products.list_products') }}">Ver Productos</a>
+</div>
+
+<div class="stat-card">
+  <h3>Resumen de Inventario</h3>
+  <div class="stat-grid" style="margin-top: 1rem;">
+    <div class="stat-item">
+      <span class="stat-number">Bs. {{ total_stock_value }}</span>
+      <span class="stat-label">Valor total de stock</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{{ products|length }}</span>
+      <span class="stat-label">Productos</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-number">{{ low_stock|length }}</span>
+      <span class="stat-label">Bajo stock (<=5)</span>
+    </div>
+  </div>
+</div>
+
+<div class="stat-card" style="margin-top: 1rem;">
+  <h3>Top Productos (por ventas)</h3>
+  <ul>
+    {% for p in top_products %}
+    <li style="margin: 0.5rem 0;">{{ loop.index }}. {{ p.name }} — Ventas: {{ p.sales_count or 0 }}</li>
+    {% endfor %}
+  </ul>
+</div>
+
+<h3 style="margin-top: 1rem;">Lista de Productos</h3>
+<div class="table-container">
+  <table class="table">
+  <thead><tr><th>Nombre</th><th>SKU</th><th>Stock</th><th>Precio</th><th>Ventas</th><th></th></tr></thead>
+  <tbody>
+    {% for p in products %}
+    <tr>
+      <td>{{ p.name }}</td>
+      <td>{{ p.sku }}</td>
+      <td>{{ p.stock or 0 }}</td>
+      <td>{{ p.price or '' }}</td>
+      <td>{{ p.sales_count or 0 }}</td>
+      <td style="display:flex; gap:0.5rem;">
+        <form method="post" action="{{ url_for('inventory.adjust_stock') }}">
+          <input type="hidden" name="product_id" value="{{ p.id }}" />
+          <input type="number" name="delta" value="0" style="width:80px;" />
+          <button class="btn btn-small" type="submit">Actualizar</button>
+        </form>
+        <a class="btn btn-small" href="{{ url_for('products.edit_product', product_id=p.id) }}">Editar</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+</div>
+
+{% endblock %}

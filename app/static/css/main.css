@@ -628,6 +628,50 @@ body {
     border-bottom: none;
 }
 
+/* ===== INVENTARIO ===== */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.inventory-summary, .inventory-top {
+    background: white;
+    color: #333;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+.inventory-summary h3, .inventory-top h3 {
+    margin-top: 0;
+    color: #333;
+    font-weight: 700;
+}
+
+.inventory-summary p {
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.inventory-top ul {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+}
+
+@media (max-width: 768px) {
+    .inventory-grid { grid-template-columns: 1fr; }
+}
+
+/* Small buttons */
+.btn-small {
+    padding: 0.35rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+
 /* ===== FORMULARIOS CRUD ===== */
 .form-container {
     background: rgba(255, 255, 255, 0.05);

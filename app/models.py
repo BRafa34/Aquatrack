@@ -80,6 +80,8 @@ class Product(db.Model):
     sku = db.Column(db.String(80), unique=True)
     price = db.Column(db.Numeric, nullable=True)
     active = db.Column(db.Boolean, default=True)
+    stock = db.Column(db.Integer, default=0)
+    sales_count = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
 class Order(db.Model):

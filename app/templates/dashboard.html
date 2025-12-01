@@ -66,6 +66,10 @@
                 <div class="action-icon">📦</div>
                 <div class="action-text">Gestionar Productos</div>
             </a>
+            <a href="{{ url_for('inventory.dashboard') }}" class="action-card admin-only">
+                <div class="action-icon">📊</div>
+                <div class="action-text">Inventario</div>
+            </a>
             <a href="{{ url_for('zones.list_zones') }}" class="action-card admin-only">
                 <div class="action-icon">🗺️</div>
                 <div class="action-text">Configurar Zonas</div>

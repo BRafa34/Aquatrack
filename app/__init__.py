@@ -37,6 +37,7 @@ def create_app():
     from app.zones.routes import zones_bp
     from app.depots.routes import depots_bp
     from app.products.routes import products_bp
+    from app.inventory.routes import inventory_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -49,6 +50,7 @@ def create_app():
     app.register_blueprint(zones_bp)
     app.register_blueprint(depots_bp)
     app.register_blueprint(products_bp)
+    app.register_blueprint(inventory_bp)
 
     # --- Reparar esquema en caliente: añadir columna orders.zone_id si no existe ---
     with app.app_context():
@@ -75,5 +77,23 @@ def create_app():
             db.create_all()
         except Exception as e:
             print('Warning: db.create_all() falló:', e)
+        # Asegurar que columnas añadidas dinamicamente existen (para dev sin migraciones)
+        try:
+            inspector = inspect(db.engine)
+            if 'products' in inspector.get_table_names():
+                prod_cols = [c['name'] for c in inspector.get_columns('products')]
+                with db.engine.begin() as conn:
+                    if 'stock' not in prod_cols:
+                        try:
+                            conn.execute(text('ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0'))
+                        except Exception as ex:
+                            print('Warning: no se pudo añadir products.stock:', ex)
+                    if 'sales_count' not in prod_cols:
+                        try:
+                            conn.execute(text('ALTER TABLE products ADD COLUMN sales_count INTEGER DEFAULT 0'))
+                        except Exception as ex:
+                            print('Warning: no se pudo añadir products.sales_count:', ex)
+        except Exception as e:
+            print('Warning: fallback chequeo columnas products falló:', e)
     
     return app

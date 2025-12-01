@@ -19,7 +19,7 @@ def list_products():
 def create_product():
     form = ProductForm()
     if form.validate_on_submit():
-        p = Product(name=form.name.data, sku=form.sku.data or None, price=form.price.data or None, active=form.active.data)
+        p = Product(name=form.name.data, sku=form.sku.data or None, price=form.price.data or None, active=form.active.data, stock=form.stock.data or 0)
         db.session.add(p)
         db.session.commit()
         flash('Producto creado', 'success')
@@ -36,6 +36,7 @@ def edit_product(product_id):
         product.name = form.name.data
         product.sku = form.sku.data or None
         product.price = form.price.data or None
+        product.stock = form.stock.data or 0
         product.active = form.active.data
         db.session.commit()
         flash('Producto actualizado', 'success')

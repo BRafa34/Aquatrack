@@ -8,7 +8,7 @@
 <div class="list">
   <table class="table">
     <thead>
-      <tr><th>Nombre</th><th>SKU</th><th>Precio</th><th>Activo</th><th></th></tr>
+      <tr><th>Nombre</th><th>SKU</th><th>Precio</th><th>Stock</th><th>Ventas</th><th>Activo</th><th></th></tr>
     </thead>
     <tbody>
       {% for p in products %}
@@ -16,6 +16,8 @@
         <td>{{ p.name }}</td>
         <td>{{ p.sku or '' }}</td>
         <td>{{ p.price or '' }}</td>
+        <td>{{ p.stock or 0 }}</td>
+        <td>{{ p.sales_count or 0 }}</td>
         <td>{{ 'Sí' if p.active else 'No' }}</td>
         <td>
           <a class="btn btn-small" href="{{ url_for('products.edit_product', product_id=p.id) }}">Editar</a>
