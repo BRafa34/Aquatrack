@@ -47,7 +47,7 @@
   <div class="report-section">
     <h3>Productos más vendidos</h3>
     <table class="table">
-      <thead><tr><th>Producto</th><th>SKU</th><th>Vendidos</th></tr></thead>
+      <thead><tr><th>Producto</th><th>Descripcion</th><th>Vendidos</th></tr></thead>
       <tbody>
         {% for p in top_products %}
         <tr><td>{{ p.name }}</td><td>{{ p.sku }}</td><td>{{ p.sales_count or 0 }}</td></tr>
