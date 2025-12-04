@@ -929,3 +929,54 @@ body {
         border-radius: 15px;
     }
 }
+
+/* ===== REPORTES ===== */
+.report-container {
+    max-width: 1100px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+}
+
+.report-summary {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.report-summary .card {
+    flex: 1;
+    background: white;
+    color: #333;
+    padding: 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+.report-section {
+    margin-top: 1rem;
+    background: rgba(255,255,255,0.02);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
+.report-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.report-controls label { color: #E8EDF2; font-weight:600; }
+.report-controls select, .report-controls input { padding: 0.5rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03); color: #E8EDF2; }
+
+/* Print-friendly rules */
+@media print {
+    body { background: #fff !important; color: #000 !important; }
+    .navbar, .nav-container, .action-grid, .footer, .btn, .btn-primary, .action-card, .nav-menu { display: none !important; }
+    .report-container { box-shadow: none; background: transparent; margin: 0; padding: 0; }
+    .table thead th { color: #000 !important; }
+    .table td, .table th { color: #000 !important; background: transparent !important; }
+    .report-header { display: block; margin-bottom: 1rem; }
+    .no-print { display: none !important; }
+    @page { size: A4; margin: 20mm; }
+}

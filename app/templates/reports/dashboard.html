@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% block title %}Reportes - AquaTrack{% endblock %}
+{% block content %}
+<div class="report-container">
+  <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem;">
+    <h1>Reportes</h1>
+    <div class="report-controls no-print">
+      <label for="repMonth" style="color:#E8EDF2; margin-right:0.25rem;">Mes</label>
+      <select id="repMonth">
+        {% for m in range(1,13) %}
+        <option value="{{ m }}" {% if m== now_month %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+      </select>
+      <label for="repYear" style="color:#E8EDF2; margin-left:0.5rem; margin-right:0.25rem;">Año</label>
+      <select id="repYear">
+        {% for y in range(now_year -2, now_year +1) %}
+        <option value="{{ y }}" {% if y== now_year %}selected{% endif %}>{{ y }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-primary" id="openMonthly">Abrir informe mensual</button>
+      <button class="btn btn-secondary" id="printMonthly">Imprimir PDF (nuevo tab)</button>
+    </div>
+  </div>
+  <div class="report-summary">
+    <div class="card">
+      <h3>Total ventas</h3>
+      <p><strong>Bs. {{ '%.2f'|format(total_sales) }}</strong></p>
+    </div>
+    <div class="card">
+      <h3>Total pedidos</h3>
+      <p><strong>{{ total_orders }}</strong></p>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <h3>Pedidos por día (últimos 14 días)</h3>
+    <table class="table">
+      <thead><tr><th>Fecha</th><th>Pedidos</th></tr></thead>
+      <tbody>
+        {% for r in orders_per_day %}
+        <tr><td>{{ r.day }}</td><td>{{ r.count }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="report-section">
+    <h3>Productos más vendidos</h3>
+    <table class="table">
+      <thead><tr><th>Producto</th><th>SKU</th><th>Vendidos</th></tr></thead>
+      <tbody>
+        {% for p in top_products %}
+        <tr><td>{{ p.name }}</td><td>{{ p.sku }}</td><td>{{ p.sales_count or 0 }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+  (function(){
+    const openBtn = document.getElementById('openMonthly');
+    const printBtn = document.getElementById('printMonthly');
+    openBtn && openBtn.addEventListener('click', function(){
+      const m = document.getElementById('repMonth').value;
+      const y = document.getElementById('repYear').value;
+      // Abrir la vista mensual en la misma pestaña
+      window.location.href = `${window.location.origin}/reports/monthly?month=${m}&year=${y}`;
+    });
+    printBtn && printBtn.addEventListener('click', function(){
+      const m = document.getElementById('repMonth').value;
+      const y = document.getElementById('repYear').value;
+      const url = `${window.location.origin}/reports/monthly?month=${m}&year=${y}&print=1`;
+      window.open(url, '_blank');
+    });
+  })();
+</script>
+{% endblock %}

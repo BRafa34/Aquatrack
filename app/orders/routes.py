@@ -4,6 +4,7 @@ from app import db
 from app.models import Order, Client, Zone, Product
 from .forms import OrderForm
 import json
+from datetime import date
 
 
 def get_products_json():
@@ -36,6 +37,12 @@ def create_order():
     form.client_id.choices = [(c.id, c.name) for c in Client.query.order_by(Client.name).all()]
     form.zone_id.choices = [(z.id, z.name) for z in Zone.query.order_by(Zone.name).all()]
     if form.validate_on_submit():
+        # Validar que la fecha de entrega no sea anterior al día actual
+        if form.delivery_date.data and form.delivery_date.data < date.today():
+            flash('La fecha de entrega no puede ser anterior a hoy.', 'error')
+            products = get_products_json()
+            today_str = date.today().isoformat()
+            return render_template('orders/detail.html', form=form, is_edit=False, products=products, today_str=today_str)
         items_json = None
         if form.items.data:
             try:
@@ -83,7 +90,8 @@ def create_order():
         flash('Pedido creado', 'success')
         return redirect(url_for('orders.list_orders'))
     products = get_products_json()
-    return render_template('orders/detail.html', form=form, is_edit=False, products=products)
+    today_str = date.today().isoformat()
+    return render_template('orders/detail.html', form=form, is_edit=False, products=products, today_str=today_str)
 
 
 @orders_bp.route('/<int:order_id>/edit', methods=['GET', 'POST'])
@@ -94,6 +102,12 @@ def edit_order(order_id):
     form.client_id.choices = [(c.id, c.name) for c in Client.query.order_by(Client.name).all()]
     form.zone_id.choices = [(z.id, z.name) for z in Zone.query.order_by(Zone.name).all()]
     if form.validate_on_submit():
+        # Validar que la fecha de entrega no sea anterior al día actual
+        if form.delivery_date.data and form.delivery_date.data < date.today():
+            flash('La fecha de entrega no puede ser anterior a hoy.', 'error')
+            products = get_products_json()
+            today_str = date.today().isoformat()
+            return render_template('orders/detail.html', form=form, is_edit=True, products=products, today_str=today_str)
         order.client_id = form.client_id.data
         order.zone_id = form.zone_id.data
         order.delivery_date = form.delivery_date.data
@@ -152,7 +166,8 @@ def edit_order(order_id):
         return redirect(url_for('orders.list_orders'))
     form.items.data = json.dumps(order.items, ensure_ascii=False) if order.items else ''
     products = get_products_json()
-    return render_template('orders/detail.html', form=form, is_edit=True, products=products)
+    today_str = date.today().isoformat()
+    return render_template('orders/detail.html', form=form, is_edit=True, products=products, today_str=today_str)
 
 
 @orders_bp.route('/<int:order_id>/delete', methods=['POST'])

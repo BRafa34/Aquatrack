@@ -18,7 +18,11 @@
 
     <div class="form-group">
       {{ form.delivery_date.label }}
+      {% if today_str is defined %}
+      {{ form.delivery_date(class_='input', min=today_str) }}
+      {% else %}
       {{ form.delivery_date(class_='input') }}
+      {% endif %}
     </div>
 
     <div class="form-group">

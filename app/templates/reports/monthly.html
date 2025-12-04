@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}Informe mensual - AquaTrack{% endblock %}
+{% block content %}
+<div class="report-container">
+  <div class="report-header">
+    <h1>Informe Mensual - {{ month }} / {{ year }}</h1>
+    <p>Generado: {{ current_time }}</p>
+  </div>
+
+  <div class="no-print" style="margin-bottom:1rem;">
+    <button class="btn btn-primary" onclick="window.print();">Imprimir informe (PDF)</button>
+    <a class="btn btn-secondary" href="{{ url_for('reports.dashboard') }}">Volver a reportes</a>
+  </div>
+
+  <div class="report-summary">
+    <div class="card">
+      <h3>Total ventas</h3>
+      <p><strong>Bs. {{ '%.2f'|format(total_sales) }}</strong></p>
+    </div>
+    <div class="card">
+      <h3>Total pedidos</h3>
+      <p><strong>{{ total_orders }}</strong></p>
+    </div>
+  </div>
+
+  <div class="report-section">
+    <h3>Productos vendidos</h3>
+    <table class="table">
+      <thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th><th>Recaudación</th></tr></thead>
+      <tbody>
+        {% for p in product_summary %}
+        <tr>
+          <td>{{ p.name }}</td>
+          <td>{{ p.sku }}</td>
+          <td>{{ p.qty }}</td>
+          <td>Bs. {{ '%.2f'|format(p.revenue) }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="report-section" style="margin-top:1rem;">
+    <h3>Pedidos del mes</h3>
+    <table class="table">
+      <thead><tr><th>ID</th><th>Cliente</th><th>Fecha creación</th><th>Monto</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for o in orders %}
+        <tr>
+          <td>{{ o.id }}</td>
+          <td>{{ o.client.name if o.client else '—' }}</td>
+          <td>{{ o.created_at.strftime('%Y-%m-%d %H:%M') if o.created_at else '' }}</td>
+          <td>Bs. {{ '%.2f'|format(o.total_amount or 0) }}</td>
+          <td>{{ o.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+{{ super() }}
+<script>
+  // Si se abre con ?print=1, lanzar print automáticamente
+  (function(){
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('print') === '1') {
+      setTimeout(function(){ window.print(); }, 500);
+    }
+  })();
+</script>
+{% endblock %}

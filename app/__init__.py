@@ -38,6 +38,7 @@ def create_app():
     from app.depots.routes import depots_bp
     from app.products.routes import products_bp
     from app.inventory.routes import inventory_bp
+    from app.reports.routes import reports_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -51,6 +52,7 @@ def create_app():
     app.register_blueprint(depots_bp)
     app.register_blueprint(products_bp)
     app.register_blueprint(inventory_bp)
+    app.register_blueprint(reports_bp)
 
     # --- Reparar esquema en caliente: añadir columna orders.zone_id si no existe ---
     with app.app_context():

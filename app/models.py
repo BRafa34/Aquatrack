@@ -22,11 +22,15 @@ class User(UserMixin, db.Model):
 #esta clase define la estructura de la tabla de usuarios en la base de datos usando SQLAlchemy
     
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password, method='pbkdf2:sha256')
 #esta función genera un hash seguro de la contraseña y lo almacena en la base de datos
     
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        try:
+            return check_password_hash(self.password_hash, password)
+        except (ValueError, TypeError):
+            # Si el hash está corrupto o es inválido, regenerar y comparar
+            return False
 #esta función verifica si la contraseña proporcionada coincide con el hash almacenado en la base de datos
     
     def __repr__(self):
