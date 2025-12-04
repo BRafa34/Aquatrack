@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required
 from app import db
-from app.models import Order, Client, Zone, Product
+from app.models import Order, Client, Zone, Product, DiscountRule
 from .forms import OrderForm
 import json
 from datetime import date
@@ -20,7 +20,107 @@ def get_products_json():
         for p in products
     ]
 
+
+def get_products_with_discounts():
+    """Retorna productos con sus reglas de descuento por volumen."""
+    products = Product.query.filter_by(active=True).order_by(Product.name).all()
+    result = []
+    for p in products:
+        discounts = DiscountRule.query.filter_by(product_id=p.id, active=True).order_by(DiscountRule.min_quantity).all()
+        result.append({
+            'id': p.id,
+            'name': p.name,
+            'sku': p.sku,
+            'description': p.description,
+            'price': float(p.price) if p.price is not None else None,
+            'stock': int(p.stock) if p.stock is not None else 0,
+            'discounts': [
+                {'min_quantity': d.min_quantity, 'discount_percent': d.discount_percent}
+                for d in discounts
+            ]
+        })
+    return result
+
+
+def calculate_order_total(items_data):
+    """Calcula el total de la orden con descuentos aplicados.
+    
+    Retorna:
+        {
+            'subtotal': float,
+            'total_discount': float,
+            'total': float,
+            'items_with_discount': [{...}]
+        }
+    """
+    if not items_data:
+        return {'subtotal': 0.0, 'total_discount': 0.0, 'total': 0.0, 'items_with_discount': []}
+    
+    subtotal = 0.0
+    total_discount = 0.0
+    items_with_discount = []
+    
+    for item in items_data:
+        try:
+            pid = item.get('product_id')
+            qty = int(item.get('qty', 0))
+            price = float(item.get('price') or 0)
+        except (ValueError, TypeError):
+            continue
+        
+        if not pid or qty <= 0:
+            continue
+        
+        line_subtotal = qty * price
+        
+        # Buscar descuento aplicable
+        discount_rule = DiscountRule.query.filter(
+            DiscountRule.product_id == pid,
+            DiscountRule.active == True,
+            DiscountRule.min_quantity <= qty
+        ).order_by(DiscountRule.min_quantity.desc()).first()
+        
+        line_discount = 0.0
+        discount_percent = 0.0
+        if discount_rule:
+            discount_percent = discount_rule.discount_percent
+            line_discount = line_subtotal * (discount_percent / 100.0)
+        
+        line_total = line_subtotal - line_discount
+        subtotal += line_subtotal
+        total_discount += line_discount
+        
+        items_with_discount.append({
+            'product_id': pid,
+            'name': item.get('name', ''),
+            'sku': item.get('sku', ''),
+            'qty': qty,
+            'price': price,
+            'subtotal': line_subtotal,
+            'discount_percent': discount_percent,
+            'discount_amount': line_discount,
+            'total': line_total
+        })
+    
+    return {
+        'subtotal': round(subtotal, 2),
+        'total_discount': round(total_discount, 2),
+        'total': round(subtotal - total_discount, 2),
+        'items_with_discount': items_with_discount
+    }
+
+
 orders_bp = Blueprint('orders', __name__, url_prefix='/orders')
+
+
+@orders_bp.route('/api/calculate-total', methods=['POST'])
+@login_required
+def api_calculate_total():
+    """API endpoint para calcular total con descuentos en tiempo real (AJAX)."""
+    data = request.get_json()
+    items = data.get('items', [])
+    result = calculate_order_total(items)
+    return jsonify(result)
 
 
 @orders_bp.route('/')
@@ -77,6 +177,12 @@ def create_order():
             total_amount=form.total_amount.data,
             status=form.status.data
         )
+        
+        # Calcular total automático con descuentos
+        if items_json:
+            calc_result = calculate_order_total(items_json)
+            order.total_amount = calc_result['total']
+        
         db.session.add(order)
         try:
             for prod, delta in adjustments:
@@ -89,7 +195,7 @@ def create_order():
             return render_template('orders/detail.html', form=form, is_edit=False, products=get_products_json())
         flash('Pedido creado', 'success')
         return redirect(url_for('orders.list_orders'))
-    products = get_products_json()
+    products = get_products_with_discounts()
     today_str = date.today().isoformat()
     return render_template('orders/detail.html', form=form, is_edit=False, products=products, today_str=today_str)
 
@@ -154,6 +260,11 @@ def edit_order(order_id):
         # no commit yet; we'll apply adjustments and commit atomically
         # aplicar ajustes en stock
         try:
+            # Calcular total automático con descuentos
+            if new_items:
+                calc_result = calculate_order_total(new_items)
+                order.total_amount = calc_result['total']
+            
             for prod, delta in adjustments:
                 prod.stock = (prod.stock or 0) - delta
                 prod.sales_count = (prod.sales_count or 0) + delta
@@ -161,11 +272,11 @@ def edit_order(order_id):
         except Exception:
             db.session.rollback()
             flash('Ocurrió un error al actualizar stock en la edición', 'error')
-            return render_template('orders/detail.html', form=form, is_edit=True, products=get_products_json())
+            return render_template('orders/detail.html', form=form, is_edit=True, products=get_products_with_discounts())
         flash('Pedido actualizado', 'success')
         return redirect(url_for('orders.list_orders'))
     form.items.data = json.dumps(order.items, ensure_ascii=False) if order.items else ''
-    products = get_products_json()
+    products = get_products_with_discounts()
     today_str = date.today().isoformat()
     return render_template('orders/detail.html', form=form, is_edit=True, products=products, today_str=today_str)
 

@@ -39,6 +39,7 @@ def create_app():
     from app.products.routes import products_bp
     from app.inventory.routes import inventory_bp
     from app.reports.routes import reports_bp
+    from app.discounts.routes import discounts_bp
     
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(main_bp)
@@ -53,6 +54,7 @@ def create_app():
     app.register_blueprint(products_bp)
     app.register_blueprint(inventory_bp)
     app.register_blueprint(reports_bp)
+    app.register_blueprint(discounts_bp)
 
     # --- Reparar esquema en caliente: añadir columna orders.zone_id si no existe ---
     with app.app_context():
@@ -95,7 +97,19 @@ def create_app():
                             conn.execute(text('ALTER TABLE products ADD COLUMN sales_count INTEGER DEFAULT 0'))
                         except Exception as ex:
                             print('Warning: no se pudo añadir products.sales_count:', ex)
+                    if 'description' not in prod_cols:
+                        try:
+                            conn.execute(text('ALTER TABLE products ADD COLUMN description TEXT'))
+                        except Exception as ex:
+                            print('Warning: no se pudo añadir products.description:', ex)
         except Exception as e:
             print('Warning: fallback chequeo columnas products falló:', e)
+        # Crear tabla discount_rules si no existe
+        try:
+            inspector = inspect(db.engine)
+            if 'discount_rules' not in inspector.get_table_names():
+                db.create_all()
+        except Exception as e:
+            print('Warning: no se pudo crear tabla discount_rules:', e)
     
     return app

@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Descargar descuentos - AquaTrack{% endblock %}
+{% block content %}
+<div class="page-header">
+  <h1>📊 Gestionar Descuentos por Volumen</h1>
+  <a href="{{ url_for('discounts.create_discount') }}" class="btn btn-primary">➕ Nuevo descuento</a>
+  <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">← Volver</a>
+</div>
+
+<div class="table-container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad mínima</th>
+        <th>Descuento (%)</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if rules %}
+        {% for rule in rules %}
+        <tr>
+          <td>{{ rule.product.name if rule.product else '—' }}</td>
+          <td>{{ rule.min_quantity }} unidades</td>
+          <td><strong>{{ rule.discount_percent }}%</strong></td>
+          <td>
+            <span class="status-badge {% if rule.active %}status-delivered{% else %}status-cancelled{% endif %}">
+              {{ "Activo" if rule.active else "Inactivo" }}
+            </span>
+          </td>
+          <td>
+            <a href="{{ url_for('discounts.edit_discount', rule_id=rule.id) }}" class="btn btn-small" style="background:#3498db;">✏️ Editar</a>
+            <form method="post" action="{{ url_for('discounts.delete_discount', rule_id=rule.id) }}" style="display:inline;">
+              <button type="submit" class="btn btn-small btn-danger" onclick="return confirm('¿Seguro?');">🗑️ Eliminar</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      {% else %}
+      <tr>
+        <td colspan="5" style="text-align:center; padding:2rem;">No hay reglas de descuento. <a href="{{ url_for('discounts.create_discount') }}">Crear una</a></td>
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

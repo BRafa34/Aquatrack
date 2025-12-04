@@ -82,11 +82,23 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     sku = db.Column(db.String(80), unique=True)
+    description = db.Column(db.Text, nullable=True)
     price = db.Column(db.Numeric, nullable=True)
     active = db.Column(db.Boolean, default=True)
     stock = db.Column(db.Integer, default=0)
     sales_count = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+class DiscountRule(db.Model):
+    __tablename__ = 'discount_rules'
+    id = db.Column(db.Integer, primary_key=True)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    min_quantity = db.Column(db.Integer, nullable=False)  # Cantidad mínima para activar descuento
+    discount_percent = db.Column(db.Float, nullable=False)  # Porcentaje de descuento (ej: 5.0 para 5%)
+    active = db.Column(db.Boolean, default=True)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    product = db.relationship('Product', backref='discount_rules')
 
 class Order(db.Model):
     __tablename__ = 'orders'

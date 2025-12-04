@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Editar' if is_edit else 'Crear' }} descuento - AquaTrack{% endblock %}
+{% block content %}
+<div class="form-container">
+  <h1>{{ '✏️ Editar' if is_edit else '➕ Crear' }} regla de descuento</h1>
+  <form method="post">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      {{ form.product_id.label }}
+      {{ form.product_id(class_='input') }}
+    </div>
+
+    <div class="form-group">
+      {{ form.min_quantity.label }}
+      {{ form.min_quantity(class_='input', placeholder='Ej: 10') }}
+      <small style="color:#B8C4CC;">Cantidad mínima de unidades para aplicar este descuento</small>
+    </div>
+
+    <div class="form-group">
+      {{ form.discount_percent.label }}
+      {{ form.discount_percent(class_='input', placeholder='Ej: 5.5') }}
+      <small style="color:#B8C4CC;">Porcentaje de descuento (ej: 5 para 5%)</small>
+    </div>
+
+    <div class="form-group">
+      <label>
+        {{ form.active(style='margin-right:0.5rem;') }}
+        Descuento activo
+      </label>
+    </div>
+
+    <div style="text-align: center; margin-top: 2rem;">
+      {{ form.submit(class_='btn btn-primary') }}
+      <a class="btn btn-secondary" href="{{ url_for('discounts.list_discounts') }}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

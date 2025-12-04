@@ -27,29 +27,52 @@
 
     <div class="form-group">
       <label>Productos</label>
-      <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem;">
-        <select id="productSelect" class="input">
+      <div style="display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap;">
+        <select id="productSelect" class="input" style="flex:1; min-width:250px;">
           <option value="">-- Selecciona producto --</option>
           {% for p in products %}
-          <option value="{{ p.id }}" data-sku="{{ p.sku }}" data-price="{{ p.price }}" {% if p.stock|int <= 0 %}disabled{% endif %}>{{ p.name }}{% if p.sku %} ({{ p.sku }}){% endif %}{% if p.price %} - Bs. {{ p.price }}{% endif %}{% if p.stock is not none %} — Stock: {{ p.stock }}{% endif %}</option>
+          <option value="{{ p.id }}" data-description="{{ p.description or '' }}" data-price="{{ p.price }}" {% if p.stock|int <= 0 %}disabled{% endif %}>{{ p.name }}{% if p.price %} - Bs. {{ p.price }}{% endif %}{% if p.stock is not none %} — Stock: {{ p.stock }}{% endif %}</option>
           {% endfor %}
         </select>
         <input id="productQty" type="number" min="1" value="1" class="input" style="width:80px;" />
-        <button type="button" id="addProductBtn" class="btn">Añadir</button>
+        <button type="button" id="addProductBtn" class="btn" style="white-space:nowrap;">Añadir</button>
       </div>
 
-      <table id="cartTable" class="table" style="margin-bottom:0.5rem;">
-        <thead><tr><th>Producto</th><th>SKU</th><th>Cantidad</th><th>Precio</th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
+      <div style="overflow-x:auto; margin-bottom:1rem;">
+        <table id="cartTable" class="table" style="margin-bottom:0; width:100%;">
+          <thead><tr><th style="min-width:120px;">Producto</th><th style="min-width:150px;">Descripción</th><th style="min-width:80px;">Cant.</th><th style="min-width:70px;">Precio</th><th style="min-width:90px;">Subtotal</th><th style="min-width:100px;">Desc.</th><th style="min-width:90px;">Total</th><th style="min-width:70px;"></th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <!-- Resumen de totales -->
+      <div style="background:#f5f5f5; padding:1.5rem; border-radius:8px; margin-bottom:1rem; color:#333;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1rem;">
+          <div>
+            <strong>Subtotal:</strong>
+            <div id="summarySubtotal" style="font-size:1.1rem; font-weight:bold;">Bs. 0.00</div>
+          </div>
+          <div>
+            <strong style="color:#e74c3c;">Descuento total:</strong>
+            <div id="summaryDiscount" style="font-size:1.1rem; font-weight:bold; color:#e74c3c;">Bs. 0.00</div>
+          </div>
+        </div>
+        <div style="padding-top:1rem; border-top:2px solid #ccc;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:1.2rem;">Total a pagar:</strong>
+            <span id="summaryTotal" style="font-size:1.4rem; font-weight:bold; color:#2ECC71;">Bs. 0.00</span>
+          </div>
+        </div>
+      </div>
 
       {{ form.items(rows=4, class_='input', style='display:none;') }}
-      <small style="color: #B8C4CC;">Usa el selector para construir la lista de productos del pedido.</small>
+      <small style="color: #B8C4CC;">Usa el selector para construir la lista de productos del pedido. El total se calcula automáticamente con descuentos aplicables.</small>
     </div>
 
     <div class="form-group">
       {{ form.total_amount.label }}
-      {{ form.total_amount(class_='input', placeholder='0.00') }}
+      {{ form.total_amount(class_='input', placeholder='0.00', readonly=True) }}
+      <small style="color:#999;">Se calcula automáticamente</small>
     </div>
 
     <div class="form-group">
@@ -75,6 +98,7 @@
     const productSelect = document.getElementById('productSelect');
     const productQty = document.getElementById('productQty');
     const addBtn = document.getElementById('addProductBtn');
+    const totalField = document.querySelector('input[name="total_amount"]');
     let items = [];
 
     // Cargar items existentes (si los hay)
@@ -86,15 +110,67 @@
       items = [];
     }
 
+    // Función para buscar descuentos aplicables de un producto
+    function getApplicableDiscount(productId, quantity) {
+      const prod = products.find(p => String(p.id) === String(productId));
+      if (!prod || !prod.discounts) return 0;
+      
+      let maxDiscount = 0;
+      for (const d of prod.discounts) {
+        if (quantity >= d.min_quantity) {
+          maxDiscount = Math.max(maxDiscount, d.discount_percent);
+        }
+      }
+      return maxDiscount;
+    }
+
+    function updateTotals() {
+      let subtotal = 0, totalDiscount = 0;
+      
+      items.forEach((it) => {
+        const lineSubtotal = it.qty * it.price;
+        const discountPercent = getApplicableDiscount(it.product_id, it.qty);
+        const lineDiscount = lineSubtotal * (discountPercent / 100);
+        subtotal += lineSubtotal;
+        totalDiscount += lineDiscount;
+      });
+      
+      const total = subtotal - totalDiscount;
+      
+      // Actualizar resumen
+      document.getElementById('summarySubtotal').textContent = `Bs. ${subtotal.toFixed(2)}`;
+      document.getElementById('summaryDiscount').textContent = `Bs. ${totalDiscount.toFixed(2)}`;
+      document.getElementById('summaryTotal').textContent = `Bs. ${total.toFixed(2)}`;
+      
+      // Actualizar campo hidden para enviar al servidor
+      if (totalField) totalField.value = total.toFixed(2);
+      if (itemsField) itemsField.value = JSON.stringify(items);
+    }
+
     function renderItems(){
       cartTableBody.innerHTML = '';
       items.forEach((it, idx) => {
+        const discountPercent = getApplicableDiscount(it.product_id, it.qty);
+        const lineSubtotal = it.qty * it.price;
+        const lineDiscount = lineSubtotal * (discountPercent / 100);
+        const lineTotal = lineSubtotal - lineDiscount;
+        
+        const discountBadge = discountPercent > 0 ? ` <span style="color:#e74c3c; font-weight:bold;">${discountPercent}%</span>` : '-';
+        
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${it.name || ''}</td><td>${it.sku||''}</td><td>${it.qty}</td><td>${it.price||''}</td><td><button type="button" data-idx="${idx}" class="btn btn-small remove-item">Quitar</button></td>`;
+        tr.innerHTML = `
+          <td>${it.name || ''}</td>
+          <td style="font-size:0.9rem; color:#666;">${it.description||'—'}</td>
+          <td>${it.qty}</td>
+          <td>Bs. ${it.price.toFixed(2)}</td>
+          <td>Bs. ${lineSubtotal.toFixed(2)}</td>
+          <td>${discountBadge} (Bs. ${lineDiscount.toFixed(2)})</td>
+          <td><strong>Bs. ${lineTotal.toFixed(2)}</strong></td>
+          <td><button type="button" data-idx="${idx}" class="btn btn-small remove-item">Quitar</button></td>
+        `;
         cartTableBody.appendChild(tr);
       });
-      // actualizar campo oculto
-      if (itemsField) itemsField.value = JSON.stringify(items);
+      updateTotals();
     }
 
     // Añadir producto
@@ -110,7 +186,8 @@
       if (existing) {
         existing.qty = (existing.qty || 0) + qty;
       } else {
-        items.push({ product_id: prod.id, sku: prod.sku, name: prod.name, qty: qty, price: prod.price });
+        const description = productSelect.options[productSelect.selectedIndex].getAttribute('data-description') || '';
+        items.push({ product_id: prod.id, name: prod.name, description: description, qty: qty, price: prod.price });
       }
       renderItems();
     });
